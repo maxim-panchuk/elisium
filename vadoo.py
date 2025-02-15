@@ -3,7 +3,7 @@ import time
 
 import requests
 
-def add_captions_to_video(video_url, api_key, theme='Noah', language='Russian'):
+def add_captions_to_video(video_url, api_key, theme='Iman', language='Russian'):
     url = 'https://viralapi.vadoo.tv/api/add_captions'
     headers = {
         'X-API-KEY': api_key

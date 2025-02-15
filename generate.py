@@ -10,25 +10,49 @@ clip_duration = 5
 
 def pick_random_videos(root_dir="video/boxing", num_files=4):
     files = os.listdir(root_dir)
-    video_files = [f for f in files if f.startswith("video_")]
+    video_files = [f for f in files]
     selected = random.sample(video_files, num_files)
     return [os.path.join(root_dir, fname) for fname in selected]
 
+
 def process_video(path_to_video, clip_duration):
-    return (VideoFileClip(path_to_video)
-            .subclipped(0, clip_duration)
+    video_clip = VideoFileClip(path_to_video)
+    total_duration = video_clip.duration
+
+    if clip_duration >= total_duration:
+        subclip = video_clip.subclipped(0, total_duration)
+    else:
+        max_start = total_duration - clip_duration
+        start_time = random.uniform(0, max_start)
+        end_time = start_time + clip_duration
+        subclip = video_clip.subclipped(start_time, end_time)
+
+    return (subclip
             .resized((1080, 1920))
             .with_effects([vfx.FadeIn(1), vfx.FadeOut(1)]))
 
 def process_image(path_to_image, clip_duration):
-    return(ImageClip(path_to_image)
-           .with_duration(clip_duration)
-           .resized((1080, 1920))
-           .with_effects([vfx.FadeIn(1)]))
+    img_clip = ImageClip(path_to_image, duration=clip_duration)
+
+    scale = min(1080 / img_clip.w, 1920 / img_clip.h)
+    scaled_clip = img_clip.resized(scale)
+
+    background = ColorClip(size=(1080, 1920), color=(0, 0, 0))
+    background = background.with_duration(clip_duration)
+
+    final_clip = CompositeVideoClip([
+        background,
+        scaled_clip.with_position(("center", "center"))
+    ])
+
+    final_clip = final_clip.with_effects([vfx.FadeIn(1), vfx.FadeOut(1)])
+    return final_clip
 
 def get_paths_to_images():
-    return ['images/image_1.jpg', 'images/image_2.jpg']
+    return []
 
+def get_paths_to_videos():
+    return ['video/boxing/IMG_0582.mp4']
 
 def generate_stock_mp4(path_to_mp3):
     audio_clip = AudioFileClip(path_to_mp3)
@@ -36,8 +60,11 @@ def generate_stock_mp4(path_to_mp3):
     assert audio_clip_duration > 15
 
     image_paths = get_paths_to_images()
-    num_video_clips = int((audio_clip_duration - len(image_paths) * clip_duration) // clip_duration) + 1
+    given_video_paths = get_paths_to_videos()
+
+    num_video_clips = int((audio_clip_duration - len(image_paths) * clip_duration - len(given_video_paths) * clip_duration) // clip_duration) + 1
     video_paths = pick_random_videos(num_files=num_video_clips)
+    video_paths.extend(given_video_paths)
 
     clip_element_paths = image_paths + video_paths
     random.shuffle(clip_element_paths)
@@ -77,4 +104,4 @@ def start_pipeline(text):
 
 
 if __name__ == '__main__':
-    start_pipeline('Бокс продолжает набирать популярность, привлекая большие деньги и неожиданных участников. Джейк Пол, известный блогер и боец, недавно устроил поединок с Майком Тайсоном. Его брат Логан, менее известный, но тоже яркая фигура в соцсетях, вызвал на бой Лионеля Месси. Причиной стал конфликт из-за спортивных напитков. Логан обвиняет Месси в нарушении товарных знаков и предлагает решить разногласия на ринге. Несмотря на шумиху, бой маловероятен: разница в росте и весе слишком велика. Интрига остаётся, но поединок пока невозможен.')
+    start_pipeline('Исраил Мадримов усиленно тренируется перед боем с Верджилом Ортисом, который назначен на 22 февраля в Эр-Рияде в рамках шоу The Last Crescendo. Уроженец Узбекистана неустанно оттачивает удары, а его соперник из США также славится серьёзной подготовкой. Встреча этих титанов обещает стать настоящим испытанием для обоих.')

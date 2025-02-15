@@ -1,7 +1,7 @@
 import requests
 
 def generate_speech(text):
-    url = "http://66.55.76.199/v1/text-to-speech/EkK5I93UQWFDigLMpZcX?output_format=mp3_44100_128"
+    url = "http://66.55.76.199/v1/text-to-speech/hU3rD0Yk7DoiYULTX1pD?output_format=mp3_44100_128"
     headers = {
         "xi-api-key": "sk_8b49f06b1b5be715f4c227f3a9afb950c6a20a24d7fe5aad",
         "Content-Type": "application/json"
