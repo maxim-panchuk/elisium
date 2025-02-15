@@ -3,7 +3,7 @@ import time
 
 import requests
 
-def add_captions_to_video(video_url, api_key, theme='Luke', language='Russian'):
+def add_captions_to_video(video_url, api_key, theme='Noah', language='Russian'):
     url = 'https://viralapi.vadoo.tv/api/add_captions'
     headers = {
         'X-API-KEY': api_key
@@ -62,33 +62,3 @@ def download_video(video_url, api_key, save_dir='result', filename='downloaded_v
         return file_path
     else:
         raise Exception(f'Ошибка при скачивании видео: {response.status_code} - {response.text}')
-
-
-# Download
-# video_url = 'https://dfsncplzrz5f2.cloudfront.net/renders/gwid8sthzm/out.mp4?Expires=1739441211&Signature=AunN5HJ~rLQrD~wVkWW~Q7U-1eMKwFju6KdR15Tsg5-crBtgsSdMf8wx36cEvs~zL~IB2TF5DhDdSj7acBJRuqjsTAnCVK4uVvbA35Cb4mcucAK~Bb7oxfiy4RNyK2uWK8-9tupxHr3DnQqwkHLmyNQrAJAaIuS3MQwpNOl0hXqAnyDY9AKzBspHbFLNWElRx-vaiHj3oYc~n~AzTPB75NSpGnhZufm9Okn9xEn4TWGQ9MZvZn67UEL15VuNAFQSOXIObE27S5GIFN2uGGqeraTuhQfUInUEvvpoR2AwitQnP~d5mAyAbJWZiIRtZfZuHHXLVpQxUU~GuTjeO70tSg__&Key-Pair-Id=K2G9P08V12PAM1'
-# #api_key = 'dAyNSrz-6poJsNn-7kgL3HfykbG1XiXOzEjhZQd1Y0Q'
-# try:
-#     path = download_video(video_url, api_key)
-#     print(f'Видео сохранено в {path}')
-# except Exception as e:
-#     print(str(e))
-
-
-# Get Download URL
-# video_id = '170451637489'
-# api_key = 'dAyNSrz-6poJsNn-7kgL3HfykbG1XiXOzEjhZQd1Y0Q'
-# try:
-#     download_url = get_video_url(video_id, api_key)
-#     print(f"Видео доступно по ссылке: {download_url}")
-# except Exception as e:
-#     print(str(e))
-
-
-# video_url = 'https://drive.google.com/uc?export=download&id=1vpMHl2pRc55AmAeVWBH0y2I_nvo7x41H'
-#api_key = 'dAyNSrz-6poJsNn-7kgL3HfykbG1XiXOzEjhZQd1Y0Q'
-#
-# try:
-#     result = add_captions_to_video(video_url, api_key, language='Russian')
-#     print(f"Видео успешно отправлено на обработку. ID видео: {result['vid']}")
-# except Exception as e:
-#     print(str(e))
