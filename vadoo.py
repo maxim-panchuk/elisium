@@ -43,7 +43,7 @@ def get_video_url(video_id, api_key):
 
         time.sleep(5)
 
-def download_video(video_url, api_key, save_dir='result', filename='downloaded_video.mp4'):
+def download_video(video_url, api_key, save_dir='result', filename='downloaded_video_1.mp4'):
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
     print(video_url)

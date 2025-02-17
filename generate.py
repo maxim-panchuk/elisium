@@ -49,20 +49,20 @@ def process_image(path_to_image, clip_duration):
     return final_clip
 
 def get_paths_to_images():
-    return []
+    return ['images/image_7.jpeg']
 
 def get_paths_to_videos():
-    return ['video/boxing/IMG_0582.mp4']
+    return ['video/boxing/IMG_7655.mp4']
 
 def generate_stock_mp4(path_to_mp3):
-    audio_clip = AudioFileClip(path_to_mp3)
-    audio_clip_duration = audio_clip.duration
-    assert audio_clip_duration > 15
+    voice_clip = AudioFileClip(path_to_mp3)
+    voice_duration = voice_clip.duration
+    assert voice_duration > 15
 
     image_paths = get_paths_to_images()
     given_video_paths = get_paths_to_videos()
 
-    num_video_clips = int((audio_clip_duration - len(image_paths) * clip_duration - len(given_video_paths) * clip_duration) // clip_duration) + 1
+    num_video_clips = int((voice_duration - len(image_paths) * clip_duration - len(given_video_paths) * clip_duration) // clip_duration) + 1
     video_paths = pick_random_videos(num_files=num_video_clips)
     video_paths.extend(given_video_paths)
 
@@ -86,10 +86,18 @@ def generate_stock_mp4(path_to_mp3):
         prev_clip = clip
         clip_list.append(clip)
 
-    clip_list[-1].with_end(audio_clip_duration + 2)
+    clip_list[-1].with_end(voice_duration + 2)
 
-    final_clip = CompositeVideoClip(clip_list).with_audio(audio_clip)
+    final_clip = CompositeVideoClip(clip_list)
+    bg_music_path = "music/Ghostemane-Fed-Up.mp3"
+    bg_clip = AudioFileClip(bg_music_path)
+    final_duration = voice_duration + 2
+    bg_music_loop = bg_clip.with_effects([afx.AudioLoop(duration=final_duration)]).with_volume_scaled(0.3)
+    final_audio = CompositeAudioClip([voice_clip, bg_music_loop])
+    final_audio = final_audio.with_duration(final_duration)
+    final_clip = final_clip.with_audio(final_audio).with_duration(final_duration)
     final_clip.write_videofile('tmp/composed.mp4', fps=30, codec='libx264', audio_codec='aac')
+
     return 'tmp/composed.mp4'
 
 vadoo_ai_api_key = 'dAyNSrz-6poJsNn-7kgL3HfykbG1XiXOzEjhZQd1Y0Q'
@@ -104,4 +112,4 @@ def start_pipeline(text):
 
 
 if __name__ == '__main__':
-    start_pipeline('Исраил Мадримов усиленно тренируется перед боем с Верджилом Ортисом, который назначен на 22 февраля в Эр-Рияде в рамках шоу The Last Crescendo. Уроженец Узбекистана неустанно оттачивает удары, а его соперник из США также славится серьёзной подготовкой. Встреча этих титанов обещает стать настоящим испытанием для обоих.')
+    start_pipeline('text')
