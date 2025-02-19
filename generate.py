@@ -4,6 +4,7 @@ import os
 
 from eleven_labs import generate_speech
 from google_drive import upload_video
+from subtitlese import make_subtitles
 from vadoo import add_captions_to_video, get_video_url, download_video
 
 clip_duration = 5
@@ -54,7 +55,7 @@ def get_paths_to_images():
 def get_paths_to_videos():
     return ['video/boxing/IMG_7655.mp4']
 
-def generate_stock_mp4(path_to_mp3):
+def generate_stock_mp4(path_to_mp3, text):
     voice_clip = AudioFileClip(path_to_mp3)
     voice_duration = voice_clip.duration
     assert voice_duration > 15
@@ -89,6 +90,8 @@ def generate_stock_mp4(path_to_mp3):
     clip_list[-1].with_end(voice_duration + 2)
 
     final_clip = CompositeVideoClip(clip_list)
+    subtitles = make_subtitles(text)
+    final_clip = CompositeVideoClip([final_clip, *subtitles], size=(1080, 1920))
     bg_music_path = "music/Ghostemane-Fed-Up.mp3"
     bg_clip = AudioFileClip(bg_music_path)
     final_duration = voice_duration + 2
@@ -104,12 +107,8 @@ vadoo_ai_api_key = 'dAyNSrz-6poJsNn-7kgL3HfykbG1XiXOzEjhZQd1Y0Q'
 
 def start_pipeline(text):
     path_to_mp3 = generate_speech(text)
-    path_to_mp4 = generate_stock_mp4(path_to_mp3)
-    public_url, direct_download_url = upload_video(path_to_mp4)
-    vid = add_captions_to_video(direct_download_url, vadoo_ai_api_key)
-    video_captioned_url = get_video_url(vid, vadoo_ai_api_key)
-    download_video(video_captioned_url, vadoo_ai_api_key)
-
+    path_to_mp4 = generate_stock_mp4(path_to_mp3, text)
+    print(f'Video saved to :{path_to_mp4}')
 
 if __name__ == '__main__':
-    start_pipeline('text')
+    start_pipeline('Кишон Девис, недавно завоевавший титул, прямо говорит о готовности к новым вызовам и желании встретиться с двумя чемпионами легкого веса, если те вышлют ему контракт. Он не уточняет имена, но подчеркивает, что намерен доказать свое превосходство. Сейчас пояса в этой категории держат Шакур Стивенсон, Василий Ломаченко и Джервонта Дэвис, и именно они могут стать следующими соперниками «Бизнесмена». Девис уверен в своих силах и ждет достойного противника, чтобы подтвердить чемпионский статус и продолжить карьеру с громкими победами. Осталось узнать, кто первым примет его вызов.')
