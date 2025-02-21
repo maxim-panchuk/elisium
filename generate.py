@@ -3,11 +3,9 @@ import random
 import os
 
 from eleven_labs import generate_speech
-from google_drive import upload_video
 from subtitlese import make_subtitles
-from vadoo import add_captions_to_video, get_video_url, download_video
 
-clip_duration = 5
+CLIP_DURATION = 5
 
 def pick_random_videos(root_dir="video/boxing", num_files=4):
     files = os.listdir(root_dir)
@@ -63,7 +61,7 @@ def generate_stock_mp4(path_to_mp3, text):
     image_paths = get_paths_to_images()
     given_video_paths = get_paths_to_videos()
 
-    num_video_clips = int((voice_duration - len(image_paths) * clip_duration - len(given_video_paths) * clip_duration) // clip_duration) + 1
+    num_video_clips = int((voice_duration - len(image_paths) * CLIP_DURATION - len(given_video_paths) * CLIP_DURATION) // CLIP_DURATION) + 1
     video_paths = pick_random_videos(num_files=num_video_clips)
     video_paths.extend(given_video_paths)
 
@@ -77,9 +75,9 @@ def generate_stock_mp4(path_to_mp3, text):
     for i in range(num_clips):
         clip = None
         if clip_element_paths[i].endswith('.mp4'):
-            clip = process_video(clip_element_paths[i], clip_duration)
+            clip = process_video(clip_element_paths[i], CLIP_DURATION)
         else:
-            clip = process_image(clip_element_paths[i], clip_duration)
+            clip = process_image(clip_element_paths[i], CLIP_DURATION)
 
         if prev_clip is not None:
             clip = clip.with_start(prev_clip.end)
@@ -90,20 +88,21 @@ def generate_stock_mp4(path_to_mp3, text):
     clip_list[-1].with_end(voice_duration + 2)
 
     final_clip = CompositeVideoClip(clip_list)
-    subtitles = make_subtitles(text)
+    subtitles = make_subtitles(text, path_to_mp3)
     final_clip = CompositeVideoClip([final_clip, *subtitles], size=(1080, 1920))
-    bg_music_path = "music/Ghostemane-Fed-Up.mp3"
+
+    bg_music_path = "music/Blood-Sweat-and-Tears.mp3"
     bg_clip = AudioFileClip(bg_music_path)
     final_duration = voice_duration + 2
     bg_music_loop = bg_clip.with_effects([afx.AudioLoop(duration=final_duration)]).with_volume_scaled(0.3)
+
     final_audio = CompositeAudioClip([voice_clip, bg_music_loop])
     final_audio = final_audio.with_duration(final_duration)
+
     final_clip = final_clip.with_audio(final_audio).with_duration(final_duration)
     final_clip.write_videofile('tmp/composed.mp4', fps=30, codec='libx264', audio_codec='aac')
 
     return 'tmp/composed.mp4'
-
-vadoo_ai_api_key = 'dAyNSrz-6poJsNn-7kgL3HfykbG1XiXOzEjhZQd1Y0Q'
 
 def start_pipeline(text):
     path_to_mp3 = generate_speech(text)
@@ -111,4 +110,4 @@ def start_pipeline(text):
     print(f'Video saved to :{path_to_mp4}')
 
 if __name__ == '__main__':
-    start_pipeline('Кишон Девис, недавно завоевавший титул, прямо говорит о готовности к новым вызовам и желании встретиться с двумя чемпионами легкого веса, если те вышлют ему контракт. Он не уточняет имена, но подчеркивает, что намерен доказать свое превосходство. Сейчас пояса в этой категории держат Шакур Стивенсон, Василий Ломаченко и Джервонта Дэвис, и именно они могут стать следующими соперниками «Бизнесмена». Девис уверен в своих силах и ждет достойного противника, чтобы подтвердить чемпионский статус и продолжить карьеру с громкими победами. Осталось узнать, кто первым примет его вызов.')
+    start_pipeline('text')
