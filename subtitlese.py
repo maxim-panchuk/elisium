@@ -45,6 +45,8 @@ def transcribe_audio(path_to_audio):
         print(f"Результат force-alignment в файле result.json")
     else:
         print(f"Ошибка force-alignment (код {result.returncode}) при запуске echogarden")
+        return None
+    return 'result.json'
 
 def calc_words_widths(words):
     word_widths = []
@@ -85,12 +87,19 @@ def calc_words_positions(words, word_widths):
 
     return positions_and_size
 
+def reformat_src_word_list(words_info):
+    src_word_list = []
+    for word in words_info:
+        src_word_list.append(word['word'])
+    return src_word_list
+
 def make_subtitles(text, path_to_audio):
     path_to_transcription = transcribe_audio(path_to_audio)
     words_info = parse_echogarden_json(path_to_transcription)
     src_words_list = extract_words(text)
 
-    assert len(words_info) == len(src_words_list)
+    if len(src_words_list) != len(words_info):
+        src_words_list = reformat_src_word_list(words_info)
 
     i = 0
     n = len(words_info)
@@ -124,7 +133,7 @@ def make_subtitles(text, path_to_audio):
                     stroke_color='black',
                     stroke_width=2,
                 )
-                .with_position(lambda t: (pos_x, pos_y + 50 * math.sin(2 * math.pi * (t - 0))))
+                .with_position((pos_x, pos_y))
                 .with_start(start_time)
                 .with_end(group_end)
             )
@@ -139,7 +148,7 @@ def make_subtitles(text, path_to_audio):
                     stroke_color='black',
                     stroke_width=2
                 )
-                .with_position(lambda t: (pos_x, pos_y + 50 * math.sin(2 * math.pi * (t - 0))))
+                .with_position((pos_x, pos_y))
                 .with_start(start_time)
                 .with_end(end_time)
             )

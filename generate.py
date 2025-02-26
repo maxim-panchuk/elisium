@@ -47,25 +47,16 @@ def process_image(path_to_image, clip_duration):
     final_clip = final_clip.with_effects([vfx.FadeIn(1), vfx.FadeOut(1)])
     return final_clip
 
-def get_paths_to_images():
-    return ['images/image_7.jpeg']
-
-def get_paths_to_videos():
-    return ['video/boxing/IMG_7655.mp4']
-
-def generate_stock_mp4(path_to_mp3, text):
+def generate_stock_mp4(path_to_mp3, text, saved_images, saved_videos):
     voice_clip = AudioFileClip(path_to_mp3)
     voice_duration = voice_clip.duration
     assert voice_duration > 15
 
-    image_paths = get_paths_to_images()
-    given_video_paths = get_paths_to_videos()
-
-    num_video_clips = int((voice_duration - len(image_paths) * CLIP_DURATION - len(given_video_paths) * CLIP_DURATION) // CLIP_DURATION) + 1
+    num_video_clips = int((voice_duration - len(saved_images) * CLIP_DURATION - len(saved_videos) * CLIP_DURATION) // CLIP_DURATION) + 1
     video_paths = pick_random_videos(num_files=num_video_clips)
-    video_paths.extend(given_video_paths)
+    video_paths.extend(saved_videos)
 
-    clip_element_paths = image_paths + video_paths
+    clip_element_paths = saved_images + video_paths
     random.shuffle(clip_element_paths)
 
     num_clips = len(clip_element_paths)
@@ -104,10 +95,7 @@ def generate_stock_mp4(path_to_mp3, text):
 
     return 'tmp/composed.mp4'
 
-def start_pipeline(text):
+def start_pipeline(text, saved_images, saved_videos):
     path_to_mp3 = generate_speech(text)
-    path_to_mp4 = generate_stock_mp4(path_to_mp3, text)
+    path_to_mp4 = generate_stock_mp4(path_to_mp3, text, saved_images, saved_videos)
     print(f'Video saved to :{path_to_mp4}')
-
-if __name__ == '__main__':
-    start_pipeline('text')

@@ -2,6 +2,7 @@ import requests
 
 PATH_TO_VOCE = 'audio/audio.mp3'
 URL = 'http://66.55.76.199/v1/text-to-speech/hU3rD0Yk7DoiYULTX1pD?output_format=mp3_44100_128'
+URL_WITH_TIMESTAMPS = 'http://66.55.76.199/v1/text-to-speech/hU3rD0Yk7DoiYULTX1pD/with-timestamps?output_format=mp3_44100_128'
 ELEVEN_LABS_API_KEY = 'sk_8b49f06b1b5be715f4c227f3a9afb950c6a20a24d7fe5aad'
 ELEVEN_LABS_MODEL_ID = 'eleven_multilingual_v2'
 
