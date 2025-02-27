@@ -96,7 +96,7 @@ def generate_stock_mp4(path_to_mp3, text, saved_images, saved_videos):
     """
     voice_clip = AudioFileClip(path_to_mp3)
     voice_duration = voice_clip.duration
-    assert voice_duration > 15, "Voice clip must be at least 15 seconds long."
+    assert voice_duration > 25, "Voice clip must be at least 25 seconds long."
 
     # Calculate how many random videos we need
     num_video_clips = int((voice_duration - len(saved_images) * CLIP_DURATION
