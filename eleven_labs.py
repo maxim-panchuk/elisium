@@ -15,27 +15,28 @@ URL_WITH_TIMESTAMPS = config["URLS"]["URL_WITH_TIMESTAMPS"]
 PATH_TO_VOICE = config["PATHS"]["PATH_TO_VOICE"]
 
 def generate_speech(text: str) -> str:
-    """
-    Sends the given text to the Eleven Labs text-to-speech API
-    and saves the resulting audio to a local file.
-    Returns the path to the saved audio file.
-    """
-
-    headers = {
-        'xi-api-key': ELEVEN_LABS_API_KEY,
-        'Content-Type': 'application/json'
-    }
-    payload = {
-        'text': text,
-        'model_id': ELEVEN_LABS_MODEL_ID
-    }
-
-    response = requests.post(URL, headers=headers, json=payload)
-
-    if response.status_code == 200:
-        with open(PATH_TO_VOICE, "wb") as f:
-            f.write(response.content)
-        return PATH_TO_VOICE
-    else:
-        print(f"Error: status {response.status_code}, response: {response.text}")
-        return ""
+    # """
+    # Sends the given text to the Eleven Labs text-to-speech API
+    # and saves the resulting audio to a local file.
+    # Returns the path to the saved audio file.
+    # """
+    #
+    # headers = {
+    #     'xi-api-key': ELEVEN_LABS_API_KEY,
+    #     'Content-Type': 'application/json'
+    # }
+    # payload = {
+    #     'text': text,
+    #     'model_id': ELEVEN_LABS_MODEL_ID
+    # }
+    #
+    # response = requests.post(URL, headers=headers, json=payload)
+    #
+    # if response.status_code == 200:
+    #     with open(PATH_TO_VOICE, "wb") as f:
+    #         f.write(response.content)
+    #     return PATH_TO_VOICE
+    # else:
+    #     print(f"Error: status {response.status_code}, response: {response.text}")
+    #     return ""
+    return PATH_TO_VOICE

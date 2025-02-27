@@ -189,9 +189,6 @@ def make_subtitles(text: str, path_to_audio: str) -> list[TextClip]:
 
     # Step 2: Compare the number of words
     source_words_list = extract_words(text)
-    # if len(source_words_list) != len(words_info):
-    #     # If lengths differ, take the words directly from the JSON
-    #     source_words_list = [item['word'] for item in words_info]
 
     all_clips = []
 
@@ -203,7 +200,10 @@ def make_subtitles(text: str, path_to_audio: str) -> list[TextClip]:
 
         # Convert words to uppercase
         for j, w_item in enumerate(group):
-            w_item['word'] = source_words_list[i + j].upper()
+            if i + j < len(source_words_list):
+                w_item['word'] = source_words_list[i + j].upper()
+            else: break
+
 
         i += 4
         group_end = max(w['end'] for w in group)
