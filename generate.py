@@ -13,8 +13,7 @@ from moviepy import (
 
 from eleven_labs import generate_speech
 from subtitlese import make_subtitles
-
-CLIP_DURATION = 5
+from config import config
 
 def pick_random_videos(root_dir="video/boxing", num_files=4):
     """
@@ -96,11 +95,11 @@ def generate_stock_mp4(path_to_mp3, text, saved_images, saved_videos):
     """
     voice_clip = AudioFileClip(path_to_mp3)
     voice_duration = voice_clip.duration
-    assert voice_duration > 25, "Voice clip must be at least 25 seconds long."
+    assert voice_duration > config.min_voice_duration, "Voice clip must be at least 25 seconds long."
 
     # Calculate how many random videos we need
-    num_video_clips = int((voice_duration - len(saved_images) * CLIP_DURATION
-                           - len(saved_videos) * CLIP_DURATION) // CLIP_DURATION) + 1
+    num_video_clips = int((voice_duration - len(saved_images) * config.clip_duration
+                           - len(saved_videos) * config.clip_duration) // config.clip_duration) + 1
     video_paths = pick_random_videos(num_files=num_video_clips)
 
     # Extend the list of videos with user-uploaded videos
@@ -116,9 +115,9 @@ def generate_stock_mp4(path_to_mp3, text, saved_images, saved_videos):
 
     for path in clip_element_paths:
         if path.endswith('.mp4'):
-            clip = process_video(path, CLIP_DURATION)
+            clip = process_video(path, config.clip_duration)
         else:
-            clip = process_image(path, CLIP_DURATION)
+            clip = process_image(path, config.clip_duration)
 
         if prev_clip is not None:
             clip = clip.with_start(prev_clip.end)

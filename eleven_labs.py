@@ -1,18 +1,6 @@
 import requests
-import configparser
-import os
 import time
-# Load config
-config = configparser.ConfigParser()
-config_path = os.path.join(os.path.dirname(__file__), 'config.ini')
-config.read(config_path)
-
-# Retrieve values from config
-ELEVEN_LABS_API_KEY = config["API_KEYS"]["ELEVEN_LABS_API_KEY"]
-ELEVEN_LABS_MODEL_ID = config["API_KEYS"]["ELEVEN_LABS_MODEL_ID"]
-URL = config["URLS"]["URL"]
-URL_WITH_TIMESTAMPS = config["URLS"]["URL_WITH_TIMESTAMPS"]
-PATH_TO_VOICE = config["PATHS"]["PATH_TO_VOICE"]
+from config import config
 
 def generate_speech(text: str) -> str:
     """
@@ -26,22 +14,22 @@ def generate_speech(text: str) -> str:
     wait_time = 1 # sec
 
     headers = {
-        'xi-api-key': ELEVEN_LABS_API_KEY,
+        'xi-api-key': config.eleven_labs_api_key,
         'Content-Type': 'application/json'
     }
     payload = {
         'text': text,
-        'model_id': ELEVEN_LABS_MODEL_ID
+        'model_id': config.eleven_labs_model_id
     }
 
     while retry_count < max_retries:
         try:
-            response = requests.post(URL, headers=headers, json=payload)
+            response = requests.post(config.url, headers=headers, json=payload)
             
             if response.status_code == 200:
-                with open(PATH_TO_VOICE, "wb") as f:
+                with open(config.path_to_voice, "wb") as f:
                     f.write(response.content)
-                return PATH_TO_VOICE
+                return config.path_to_voice
                 
             print(f"Attempt {retry_count + 1} failed. Status: {response.status_code}, response: {response.text}")
             retry_count += 1
