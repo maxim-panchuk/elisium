@@ -155,28 +155,13 @@ def make_subtitles(text: str, path_to_voice: str) -> list[TextClip]:
 
     words_info = parse_elevenlabs_json(path_to_transcription)
 
-    # Step 2: Compare the number of words
-    source_words_list = extract_words(text)
-
     all_clips = []
-
-   # Compare lengths and truncate arrays to the shorter length
-    # min_length = min(len(source_words_list), len(words_info))
-    # source_words_list = source_words_list[:min_length] 
-    # words_info = words_info[:min_length]
 
     # Step 3: Group words by 4
     total_words = len(words_info)
     i = 0
     while i < total_words:
         group = words_info[i: i + 4]
-
-        # Convert words to uppercase
-        # for j, w_item in enumerate(group):
-        #     if i + j < len(source_words_list):
-        #         w_item['word'] = source_words_list[i + j].upper()
-        #     else: break
-
 
         i += 4
         group_end = max(w['end'] for w in group)
