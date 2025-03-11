@@ -192,6 +192,11 @@ def make_subtitles(text: str, path_to_audio: str) -> list[TextClip]:
 
     all_clips = []
 
+   # Compare lengths and truncate arrays to the shorter length
+    min_length = min(len(source_words_list), len(words_info))
+    source_words_list = source_words_list[:min_length] 
+    words_info = words_info[:min_length]
+
     # Step 3: Group words by 4
     total_words = len(words_info)
     i = 0

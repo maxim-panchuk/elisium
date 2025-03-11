@@ -1,0 +1,7 @@
+__pycache__/
+music/
+video/
+uploads/
+tmp
+result.json
+voice/

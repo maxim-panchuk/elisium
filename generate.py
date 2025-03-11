@@ -95,7 +95,7 @@ def generate_stock_mp4(path_to_mp3, text, saved_images, saved_videos):
     """
     voice_clip = AudioFileClip(path_to_mp3)
     voice_duration = voice_clip.duration
-    assert voice_duration > config.min_voice_duration, "Voice clip must be at least 25 seconds long."
+    assert voice_duration > config.min_voice_duration, "Voice clip must be at least 10 seconds long."
 
     # Calculate how many random videos we need
     num_video_clips = int((voice_duration - len(saved_images) * config.clip_duration
@@ -114,7 +114,7 @@ def generate_stock_mp4(path_to_mp3, text, saved_images, saved_videos):
     prev_clip = None
 
     for path in clip_element_paths:
-        if path.endswith('.mp4'):
+        if path.endswith('.mp4') or path.endswith('.MP4'):
             clip = process_video(path, config.clip_duration)
         else:
             clip = process_image(path, config.clip_duration)
