@@ -20,7 +20,11 @@ class Config:
     min_words_count: int
     min_voice_duration: int
     clip_duration: int
-    
+
+    # Transcription settings
+    transcription_url: str
+    transcription_model_id: str
+    path_to_transcription: str
     @classmethod
     def load(cls) -> 'Config':
         """
@@ -38,7 +42,10 @@ class Config:
             path_to_voice=config["PATHS"]["PATH_TO_VOICE"],
             min_words_count=int(config.get("VALIDATION", "MIN_WORDS_COUNT", fallback=50)),
             min_voice_duration=int(config.get('VALIDTAION', 'MIN_VOICE_DURATION', fallback=10)),
-            clip_duration=int(config.get('VALIDATION', 'CLIP_DURATION', fallback=5))
+            clip_duration=int(config.get('VALIDATION', 'CLIP_DURATION', fallback=5)),
+            transcription_url=config["TRANSCRIPTION"]["TRANSCRIPTION_URL"],
+            transcription_model_id=config["TRANSCRIPTION"]["TRANSCRIPTION_MODEL_ID"],
+            path_to_transcription=config["TRANSCRIPTION"]["PATH_TO_TRANSCRIPTION"]
         )
 
 # Создаем глобальный экземпляр конфигурации
