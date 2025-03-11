@@ -11,7 +11,7 @@ def generate_speech(text: str) -> str:
     """
     max_retries = 3
     retry_count = 0
-    wait_time = 1 # sec
+    wait_time = 15 # sec
 
     headers = {
         'xi-api-key': config.eleven_labs_api_key,
@@ -21,6 +21,9 @@ def generate_speech(text: str) -> str:
         'text': text,
         'model_id': config.eleven_labs_model_id
     }
+
+    print(f'xi-api-key: {config.eleven_labs_api_key}')
+    print(f'url: {config.url}')
 
     while retry_count < max_retries:
         try:
@@ -45,4 +48,3 @@ def generate_speech(text: str) -> str:
                 wait_time *= 2
             
     print("Maximum number of retries exceeded")
-    return ""
