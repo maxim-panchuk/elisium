@@ -58,6 +58,7 @@ def transcribe_speech(path_to_voice: str) -> str:
            config.transcription_url,
            '-H', 'xi-api-key: ' + config.eleven_labs_api_key,
            '-H', 'Content-Type: multipart/form-data',
+           '-H', 'language_code: rus',
            '-F', 'model_id=' + config.transcription_model_id,
            '-F', 'file=@' + path_to_voice]
     
