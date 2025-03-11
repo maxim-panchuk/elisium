@@ -12,7 +12,7 @@ from moviepy import (
 )
 
 from eleven_labs import generate_speech
-from subtitlese import make_subtitles
+from subtitles import make_subtitles
 from config import config
 
 def pick_random_videos(root_dir="video/boxing", num_files=4):
