@@ -43,7 +43,9 @@ docker-compose.yml
 uploads/*
 tmp/*
 voice/*
-
+music/*
+video/*
+transcriptions/*
 # Документация
 *.md
 !README.md 
