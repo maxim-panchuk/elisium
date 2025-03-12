@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  elisium:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - FLASK_ENV=production
+    env_file:
+      - .env.docker
+    restart: unless-stopped

@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_file
 import threading
 
 from generate import start_pipeline
@@ -11,10 +11,6 @@ ALLOWED_VIDEO_TYPES = {"video/mp4"}
 
 # A global Lock to limit resource access (only one video generation at a time)
 generation_lock = threading.Lock()
-
-
-#text = "Тренер Райана Гарсии, Эдди Рейносо, мотивирует своего подопечного перед боем с Роландо Ромеро. На видео, опубликованном в сети, слышен голос за кадром: «Скажи, у тебя лучшая левая в мире». На что Рейносо уверенно отвечает Гарсии: «У тебя лучшая левая в мире, лучшая»."
-
 
 @app.route('/generate', methods=['POST'])
 def generate():
@@ -69,9 +65,9 @@ def generate():
                 return jsonify({"error": f"Unsupported mime type: {mime_type}"}), 400
 
         # Invoke the function that takes a significant amount of time to generate the video
-        start_pipeline(text, saved_images, saved_videos)
-
-        return jsonify({'success': 'Video generation successful'}), 200
+        path_to_mp4 = start_pipeline(text, saved_images, saved_videos)
+        
+        return send_file(path_to_mp4, mimetype='video/mp4', as_attachment=True)
 
     finally:
         # Always release the lock, even if there was a return or an error

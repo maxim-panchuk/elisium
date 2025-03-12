@@ -159,4 +159,4 @@ def start_pipeline(text, saved_images, saved_videos):
     """
     path_to_mp3 = generate_speech(text)
     path_to_mp4 = generate_stock_mp4(path_to_mp3, text, saved_images, saved_videos)
-    print(f'Video saved to: {path_to_mp4}')
+    return path_to_mp4
