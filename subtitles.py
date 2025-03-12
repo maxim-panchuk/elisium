@@ -159,6 +159,9 @@ def make_subtitles(text: str, path_to_voice: str) -> list[TextClip]:
 
     # Step 3: Group words by 4
     total_words = len(words_info)
+    if total_words == 0:
+        raise ValueError("No words found in transcription")
+    
     i = 0
     while i < total_words:
         group = words_info[i: i + 4]

@@ -28,14 +28,14 @@ class Config:
     @classmethod
     def load(cls) -> 'Config':
         """
-        Загружает конфигурацию из config.ini файла
+        Загружает конфигурацию из переменных окружения и config.ini файла
         """
         config = configparser.ConfigParser()
         config_path = os.path.join(os.path.dirname(__file__), 'config.ini')
         config.read(config_path)
 
         return cls(
-            eleven_labs_api_key=config["API_KEYS"]["ELEVEN_LABS_API_KEY"],
+            eleven_labs_api_key=os.getenv('ELEVEN_LABS_API_KEY'),
             eleven_labs_model_id=config["API_KEYS"]["ELEVEN_LABS_MODEL_ID"],
             url=config["URLS"]["URL"],
             url_with_timestamps=config["URLS"]["URL_WITH_TIMESTAMPS"],
