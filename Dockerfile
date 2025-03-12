@@ -22,4 +22,4 @@ RUN chmod +x start_prod.sh
 
 EXPOSE 8080
 
-CMD ["./start_prod.sh"] 
+CMD ["python3", "server.py"] 

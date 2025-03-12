@@ -12,6 +12,18 @@ ALLOWED_VIDEO_TYPES = {"video/mp4"}
 # A global Lock to limit resource access (only one video generation at a time)
 generation_lock = threading.Lock()
 
+@app.errorhandler(Exception)
+def handle_exception(e):
+    """
+    A global error handler that catches any Exception not otherwise handled.
+    Returns a JSON with the error message.
+    """
+    # You can log the exception here (e.g., using app.logger or print)
+    return jsonify({
+        "error": "An unexpected error occurred.",
+        "details": str(e)
+    }), 500
+
 @app.route('/generate', methods=['POST'])
 def generate():
     """
@@ -75,12 +87,4 @@ def generate():
 
 
 if __name__ == '__main__':
-    """
-    Launches the server on 0.0.0.0:8080.
-    If two parallel requests arrive, the second returns 429 while
-    the first one has not finished yet (thanks to the Lock).
-    """
-    os.makedirs('uploads/images', exist_ok=True)
-    os.makedirs('uploads/videos', exist_ok=True)
-
     app.run(host='0.0.0.0', port=8080)
