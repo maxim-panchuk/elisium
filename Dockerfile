@@ -18,8 +18,6 @@ COPY .env.docker .env
 
 COPY . .
 
-RUN chmod +x start_prod.sh
-
 EXPOSE 8080
 
 CMD ["python3", "server.py"] 
