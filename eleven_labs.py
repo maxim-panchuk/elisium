@@ -62,8 +62,6 @@ def transcribe_speech(path_to_voice: str) -> str:
            '-F', 'model_id=' + config.transcription_model_id,
            '-F', 'file=@' + path_to_voice]
     
-    print(cmd)
-    
     result = subprocess.run(cmd, capture_output=True, text=True)
     if result.returncode == 0:
         with open(config.path_to_transcription, 'w') as f:
