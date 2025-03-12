@@ -100,6 +100,10 @@ def generate_stock_mp4(path_to_mp3, text, saved_images, saved_videos):
     # Calculate how many random videos we need
     num_video_clips = int((voice_duration - len(saved_images) * config.clip_duration
                            - len(saved_videos) * config.clip_duration) // config.clip_duration) + 1
+    
+    if num_video_clips < 1:
+        raise ValueError("voice duration is too short, load less images or videos")
+    
     video_paths = pick_random_videos(num_files=num_video_clips)
 
     # Extend the list of videos with user-uploaded videos
