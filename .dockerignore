@@ -49,3 +49,6 @@ transcriptions/*
 # Документация
 *.md
 !README.md 
+
+# Curl
+curl.sh
