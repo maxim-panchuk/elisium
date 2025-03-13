@@ -40,23 +40,34 @@ def process_video(path_to_video, clip_duration):
     resizes it to 1080x1920, and adds fade-in/out effects.
     Returns a VideoClip object.
     """
+
     video_clip = VideoFileClip(path_to_video)
     total_duration = video_clip.duration
 
     if clip_duration >= total_duration:
-        subclip = video_clip.subclipped(0, total_duration)
+        start_time = 0
+        end_time = total_duration
     else:
         max_start = total_duration - clip_duration
         start_time = random.uniform(0, max_start)
         end_time = start_time + clip_duration
-        subclip = video_clip.subclipped(start_time, end_time)
 
-    return (
-        subclip
-        .resized((1080, 1920))
-        .with_effects([vfx.FadeIn(1), vfx.FadeOut(1)])
-    )
+    subclip = video_clip.subclipped(start_time, end_time)
 
+    scale = min(1080 / video_clip.w, 1920 / video_clip.h)
+    scaled_clip = subclip.resized(scale)
+
+    if scaled_clip.w < 1080 or scaled_clip.h < 1920:
+        background = subclip.resized((1080, 1920))
+
+        final_clip = CompositeVideoClip([
+            background,
+            scaled_clip.with_position(("center", "center"))
+        ])
+    else:
+        final_clip = scaled_clip
+
+    return final_clip
 
 def process_image(path_to_image, clip_duration):
     """
@@ -101,7 +112,7 @@ def generate_stock_mp4(path_to_mp3, text, saved_images, saved_videos):
     num_video_clips = int((voice_duration - len(saved_images) * config.clip_duration
                            - len(saved_videos) * config.clip_duration) // config.clip_duration) + 1
     
-    if num_video_clips < 1:
+    if num_video_clips < 0:
         raise ValueError("voice duration is too short, load less images or videos")
     
     video_paths = pick_random_videos(num_files=num_video_clips)
@@ -161,6 +172,15 @@ def start_pipeline(text, saved_images, saved_videos):
     2. Generates a final video using 'generate_stock_mp4'.
     3. Prints the output path of the composed video.
     """
+    # Проверяем количество слов в тексте
+    word_count = len(text.split())
+    
+    if word_count < config.min_words_count:
+        raise ValueError(f"Текст слишком короткий. Минимальное количество слов: {config.min_words_count}, получено: {word_count}")
+    
+    if hasattr(config, 'max_words_count') and word_count > config.max_words_count:
+        raise ValueError(f"Текст слишком длинный. Максимальное количество слов: {config.max_words_count}, получено: {word_count}")
+    
     path_to_mp3 = generate_speech(text)
     path_to_mp4 = generate_stock_mp4(path_to_mp3, text, saved_images, saved_videos)
     return path_to_mp4
