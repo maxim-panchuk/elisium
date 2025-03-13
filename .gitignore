@@ -6,3 +6,4 @@ tmp
 result.json
 voice/
 transcription.json
+.DS_Store

@@ -19,6 +19,7 @@ class Config:
     # Validation settings
     min_words_count: int
     min_voice_duration: int
+    max_words_count: int
     clip_duration: int
 
     # Transcription settings
@@ -43,6 +44,7 @@ class Config:
             min_words_count=int(config.get("VALIDATION", "MIN_WORDS_COUNT", fallback=50)),
             min_voice_duration=int(config.get('VALIDTAION', 'MIN_VOICE_DURATION', fallback=10)),
             clip_duration=int(config.get('VALIDATION', 'CLIP_DURATION', fallback=5)),
+            max_words_count=int(config.get('VALIDATION', 'MAX_WORDS_COUNT', fallback=200)),
             transcription_url=config["TRANSCRIPTION"]["TRANSCRIPTION_URL"],
             transcription_model_id=config["TRANSCRIPTION"]["TRANSCRIPTION_MODEL_ID"],
             path_to_transcription=config["TRANSCRIPTION"]["PATH_TO_TRANSCRIPTION"]

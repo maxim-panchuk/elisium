@@ -5,7 +5,7 @@
 HTTP_CODE=$(curl -s \
   -o response_body \
   -w "%{http_code}" \
-  -X POST http://localhost:8080/generate \
+  -X POST http://158.160.55.2:8080/generate \
   -F "text=Тренер Райана Гарсии, Эдди Рейносо, мотивирует своего подопечного перед боем с Роландо Ромеро. На видео, опубликованном в сети, слышен голос за кадром: «Скажи, у тебя лучшая левая в мире». На что Рейносо уверенно отвечает Гарсии: «У тебя лучшая левая в мире, лучшая»." \
   -F "file1=@tmp/picha.jpeg;type=image/jpeg" \
   -F "file2=@tmp/vidos.MP4;type=video/mp4")
