@@ -12,7 +12,7 @@ SUBTITLE_WIDTH = 900
 SUBTITLE_LINE_SPACING = 150       # Distance between subtitle lines
 SUBTITLE_WORD_SPACING = 20        # Distance between words
 FONT_PATH = 'BebasNeue.ttf'
-FONT_SIZE_DEFAULT = 140
+FONT_SIZE_DEFAULT = 120
 FONT_SIZE_FALLBACK = 105          # Fallback font size for very long words
 HIGHLIGHT_COLOR = 'red'
 WHITE_COLOR = 'white'
@@ -85,7 +85,8 @@ def calculate_positions_and_sizes(words: list[dict], widths: list[int]) -> list[
     Returns a list of tuples (pos_x, pos_y, font_size).
     """
     start_x = (VIDEO_WIDTH - SUBTITLE_WIDTH) / 2
-    start_y = VIDEO_HEIGHT * 2/3  # Roughly the lower third
+    #start_y = VIDEO_HEIGHT * 2/3  # Roughly the lower third
+    start_y = VIDEO_HEIGHT * 1/2  # Roughly the lower third
     positions_and_sizes = []
 
     current_x = start_x

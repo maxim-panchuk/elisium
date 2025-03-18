@@ -14,6 +14,7 @@ from moviepy import (
 from eleven_labs import generate_speech
 from subtitles import make_subtitles
 from config import config
+import cv2
 
 def pick_random_videos(root_dir="video/boxing", num_files=4):
     """
@@ -33,6 +34,33 @@ def pick_random_music(root_dir="music"):
     music_files = [f for f in files]
     selected = random.sample(music_files, 1)
     return os.path.join(root_dir, selected[0])
+
+def blur_video(video_to_blur) -> str:
+    BLURRED_VIDEO_PATH = 'tmp/blurred_video.mp4'
+    TO_BLUR_VIDEO_PATH = 'tmp/video_to_blur.mp4'
+
+    video_to_blur.write_videofile('tmp/video_to_blur.mp4', fps=30, codec='libx264', audio_codec='aac')
+
+    cap = cv2.VideoCapture(TO_BLUR_VIDEO_PATH)
+    fps = cap.get(cv2.CAP_PROP_FPS)
+    width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    out = cv2.VideoWriter(BLURRED_VIDEO_PATH, fourcc, fps, (width, height))
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            break
+        
+        blurred_frame = cv2.GaussianBlur(frame, (99, 99), 0)
+        
+        out.write(blurred_frame)
+
+    cap.release()
+    out.release()
+    print(f'blurred video saved to {BLURRED_VIDEO_PATH}')
+    video_clip = VideoFileClip(BLURRED_VIDEO_PATH)
+    return video_clip
 
 def process_video(path_to_video, clip_duration):
     """
@@ -59,15 +87,25 @@ def process_video(path_to_video, clip_duration):
 
     if scaled_clip.w < 1080 or scaled_clip.h < 1920:
         background = subclip.resized((1080, 1920))
-
+        blurred_background = blur_video(background) 
+        
         final_clip = CompositeVideoClip([
-            background,
+            blurred_background,
             scaled_clip.with_position(("center", "center"))
         ])
     else:
         final_clip = scaled_clip
 
     return final_clip
+
+def blur_image(path_to_image):
+    BLURRED_IMAGE_PATH = 'tmp/blurred_image.png'
+
+    image = cv2.imread(path_to_image)
+    image = cv2.resize(image, (1080, 1920))
+    blurred_image = cv2.GaussianBlur(image, (99, 99), 0)
+    cv2.imwrite(BLURRED_IMAGE_PATH, blurred_image)
+    return BLURRED_IMAGE_PATH
 
 def process_image(path_to_image, clip_duration):
     """
@@ -80,8 +118,8 @@ def process_image(path_to_image, clip_duration):
     scale = min(1080 / img_clip.w, 1920 / img_clip.h)
     scaled_clip = img_clip.resized(scale)
 
-    background = ColorClip(size=(1080, 1920), color=(0, 0, 0))
-    background = background.with_duration(clip_duration)
+    background_path = blur_image(path_to_image)
+    background = ImageClip(background_path, duration=clip_duration)
 
     final_clip = CompositeVideoClip([
         background,
@@ -93,7 +131,6 @@ def process_image(path_to_image, clip_duration):
         .with_effects([vfx.FadeIn(1), vfx.FadeOut(1)])
     )
     return final_clip
-
 
 def generate_stock_mp4(path_to_mp3, text, saved_images, saved_videos):
     """
@@ -164,7 +201,6 @@ def generate_stock_mp4(path_to_mp3, text, saved_images, saved_videos):
     final_clip.write_videofile('tmp/composed.mp4', fps=30, codec='libx264', audio_codec='aac')
 
     return 'tmp/composed.mp4'
-
 
 def start_pipeline(text, saved_images, saved_videos):
     """
