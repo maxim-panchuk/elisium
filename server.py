@@ -1,4 +1,5 @@
 import os
+import shutil
 from flask import Flask, request, jsonify, send_file
 import threading
 
@@ -11,6 +12,25 @@ ALLOWED_VIDEO_TYPES = {"video/mp4"}
 
 # A global Lock to limit resource access (only one video generation at a time)
 generation_lock = threading.Lock()
+
+def cleanup_directories():
+    """
+    Очищает содержимое директорий tmp и uploads
+    """
+    directories = ['tmp', 'uploads/images', 'uploads/videos']
+    for dir_name in directories:
+        dir_path = os.path.join(os.getcwd(), dir_name)
+        if os.path.exists(dir_path):
+            try:
+                for item in os.listdir(dir_path):
+                    item_path = os.path.join(dir_path, item)
+                    if os.path.isfile(item_path):
+                        os.unlink(item_path)
+                    elif os.path.isdir(item_path):
+                        shutil.rmtree(item_path)
+                print(f"Directory {dir_name} cleaned up")
+            except Exception as e:
+                print(f"Error cleaning up {dir_name}: {str(e)}")
 
 @app.errorhandler(Exception)
 def handle_exception(e):
@@ -79,7 +99,11 @@ def generate():
         # Invoke the function that takes a significant amount of time to generate the video
         path_to_mp4 = start_pipeline(text, saved_images, saved_videos)
         
-        return send_file(path_to_mp4, mimetype='video/mp4', as_attachment=True)
+        response = send_file(path_to_mp4, mimetype='video/mp4', as_attachment=True)
+        
+        cleanup_directories()
+        
+        return response
 
     finally:
         # Always release the lock, even if there was a return or an error
