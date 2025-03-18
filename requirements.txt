@@ -19,6 +19,7 @@ MarkupSafe==3.0.2
 moviepy==2.1.2
 networkx==3.4.2
 numpy==2.2.3
+opencv-python==4.11.0.86
 packaging==24.2
 pillow==10.4.0
 proglog==0.1.10
