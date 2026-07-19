@@ -4,7 +4,7 @@
 
 docker build -t panchesco13/elisium:latest .
 
-docker run -e ELEVEN_LABS_API_KEY=REDACTED \
+docker run -e ELEVEN_LABS_API_KEY="$ELEVEN_LABS_API_KEY" \
   -v $(pwd)/voice:/app/voice \
   -v $(pwd)/video:/app/video \
   -v $(pwd)/uploads:/app/uploads \
